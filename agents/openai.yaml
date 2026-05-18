@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Autopilot"
+  short_description: "Analyze research repos and generate automation files"
+  default_prompt: "Use $research-autopilot to inspect a research codebase and generate an appropriate program.md workflow."
