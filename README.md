@@ -99,4 +99,4 @@ If a marketplace indexes public GitHub repositories containing `SKILL.md`, this 
 
 ## License
 
-Add a repository license before broad public distribution if you want marketplaces to display an explicit license instead of an unknown status.
+MIT
