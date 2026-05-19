@@ -1,102 +1,117 @@
-# research-autopilot
+# Research Autopilot
 
-`research-autopilot` is a reusable agent skill for turning a research codebase into an autonomous experimentation workflow.
+Research Autopilot is a Codex skill for executable research automation and
+academic research workflows.
 
-It inspects a target repository, identifies the real experiment entrypoints and metrics, and generates project-specific files such as:
+It has two layers:
 
-- `program.md`
-- `results.tsv`
-- thin wrapper `prepare.py`
-- thin wrapper `train.py`
-- cross-agent prompt templates
+1. Core experiment automation for research repositories.
+2. A vendored Academic Research Skills suite for literature work, manuscript
+   writing, manuscript review, and research-to-publication orchestration.
 
-The skill is designed for ML and research repositories where the agent must read the code first, then generate automation files that match the project's real workflow instead of a generic template.
+## Capabilities
 
-## What It Does
+### Research repository automation
 
-The skill helps an agent:
+Use this skill when a project needs to become a repeatable experiment loop.
 
-1. inspect the target research repository
-2. identify setup steps and experiment entrypoints
-3. verify output contracts and success metrics
-4. decide whether wrapper `prepare.py` or `train.py` files are needed
-5. generate a repository-specific `program.md`
-6. generate experiment tracking files such as `results.tsv`
+It can:
 
-This is especially useful for:
+- inspect a research codebase before proposing automation
+- identify real setup, training, generation, evaluation, and sweep entrypoints
+- determine the metric source of truth
+- define editable and non-editable file scope
+- generate `program.md`, `results.tsv`, `prepare.py`, `train.py`, and agent
+  prompt templates when useful
+- prefer thin wrappers around existing project logic over reimplementation
+- surface stable outputs for autonomous keep/discard decisions
 
-- GAN or diffusion research pipelines
-- classifier evaluation pipelines
-- data augmentation research
-- repositories with many partial scripts but no single automation entrypoint
-- projects that need agent-friendly setup and experiment contracts
+The default optimization target is the metric that matches the research goal.
+For imbalanced classification and generative augmentation projects, this usually
+means downstream or minority-class metrics rather than raw accuracy.
 
-## Repository Layout
+### Bundled academic workflows
+
+The vendored suite lives in:
+
+`references/academic-research-skills/`
+
+It includes:
+
+- `deep-research`: research question design, literature review, evidence
+  synthesis, fact checking, systematic review, PRISMA, and meta-analysis.
+- `academic-paper`: paper planning, outlining, drafting, revision, citation
+  checks, formatting, abstracts, and disclosure workflows.
+- `academic-paper-reviewer`: manuscript review, peer-review simulation,
+  methodology critique, re-review, and reviewer calibration.
+- `academic-pipeline`: end-to-end research -> paper -> integrity -> review ->
+  revision -> finalization orchestration.
+
+When network access is available, the academic workflow can search for papers
+and verify references through web search and bibliographic indexes such as
+Semantic Scholar, OpenAlex, and Crossref. A typical direction-setting pass is:
+topic scoping -> paper search -> source screening -> citation verification ->
+theme/gap synthesis -> candidate next research directions.
+
+## Routing
+
+Use the narrowest workflow that satisfies the request.
+
+| Request | Route |
+| --- | --- |
+| Automate code experiments in a local repository | Core Research Autopilot |
+| Build an autonomous experiment loop | Core Research Autopilot |
+| Online paper search, literature review, fact check, PRISMA, meta-analysis, or research question design | Bundled `deep-research` |
+| Paper outline, drafting, revision, citation checking, or formatting | Bundled `academic-paper` |
+| Manuscript critique, peer-review simulation, methodology review, or re-review | Bundled `academic-paper-reviewer` |
+| Full research-to-publication workflow | Bundled `academic-pipeline` |
+
+For ML research projects, use both layers when needed: first establish
+reproducible experiment commands and metric contracts, then use the academic
+workflows for framing, writing, review, and publication.
+
+## Usage Examples
 
 ```text
-SKILL.md
-agents/openai.yaml
-references/
-  program-template.md
-  claude-code-template.md
-  examples/autoresearch/
+Use $research-autopilot to inspect this repository and create a program.md for autonomous experiments.
 ```
 
-Key files:
-
-- `SKILL.md`: main skill instructions
-- `references/program-template.md`: reusable `program.md` template guidance
-- `references/claude-code-template.md`: plain prompt template for Claude Code and similar agents
-- `references/examples/autoresearch/`: minimal worked example using bundled `prepare.py`, `train.py`, and `program.md`
-
-## Installation
-
-### Codex
-
-If you want to install from GitHub into a compatible skills manager:
-
-```bash
-npx skills add https://github.com/crabin/research-autopilot
+```text
+Use $research-autopilot to design the literature review and research question for this ML augmentation project.
 ```
 
-### SkillHub
-
-Once indexed by SkillHub, the expected install form is:
-
-```bash
-npx skillhub install crabin/research-autopilot
+```text
+Use $research-autopilot to help turn these verified experiment results into a paper outline.
 ```
 
-### Claude Code
+```text
+Use $research-autopilot to review this manuscript and produce a revision roadmap.
+```
 
-Claude Code does not automatically load Codex skills from this repository structure, but it can still use the generated files directly.
+## Publication Notes
 
-Recommended approach:
+The skill is designed for progressive loading:
 
-1. use this repository as the source skill definition
-2. generate `program.md`, `prepare.py`, `train.py`, or prompts for the target project
-3. let Claude Code read those generated files inside the target project
+- load `SKILL.md` first
+- read only the selected bundled academic skill's `SKILL.md`
+- defer detailed agent prompts, templates, scripts, and references until needed
 
-## Example Workflow
+When publishing or redistributing this skill, preserve upstream attribution for
+the vendored Academic Research Skills suite:
 
-Given a research repository, the skill should:
-
-1. read the repository README and actual training scripts
-2. discover setup requirements and outputs
-3. determine whether the repository already has usable `prepare.py` and `train.py` entrypoints
-4. generate missing wrappers if needed
-5. generate a project-specific `program.md`
-
-The bundled `autoresearch` example shows a minimal version of this pattern.
-
-## Notes for Marketplaces
-
-This repository is a single-skill repository with the skill rooted at `SKILL.md`.
-
-If a marketplace indexes public GitHub repositories containing `SKILL.md`, this repository is intended to be directly discoverable from:
-
-- `crabin/research-autopilot`
+- `references/academic-research-skills/LICENSE`
+- `references/academic-research-skills/NOTICE.md`
 
 ## License
 
-MIT
+The original Research Autopilot skill content is distributed under the
+repository's top-level license. The vendored Academic Research Skills suite is
+third-party content and remains governed by its own upstream license and notice
+files under `references/academic-research-skills/`.
+
+## Scope Boundary
+
+This skill can support research automation and academic writing workflows, but
+it should not fabricate data, invent metrics, invent citations, or bypass human
+research judgment. Generated experiment wrappers should call real project logic,
+and academic outputs should preserve source verification and citation integrity.

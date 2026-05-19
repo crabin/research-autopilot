@@ -1,11 +1,66 @@
 ---
 name: research-autopilot
-description: Analyze a research codebase, identify its real experiment entrypoints, metrics, and editable scope, then generate project-specific automation files such as `program.md`, `results.tsv`, or experiment prompts. Use when a user wants to adapt autonomous research workflows to a local research repository, especially ML/GAN/classifier pipelines where the agent must inspect code before proposing or generating files.
+description: Analyze research codebases and academic research workflows. Use when a user wants to automate executable research experiments in a local repository, especially ML/GAN/classifier pipelines, or when they explicitly ask for research-autopilot to handle academic research tasks such as deep research, literature review, systematic review, PRISMA/meta-analysis, fact-checking, research-question design, academic paper writing/revision/formatting/citation checks, manuscript review, peer-review simulation, or an end-to-end research-to-publication pipeline.
 ---
 
 # Research Autopilot
 
 Inspect the target repository before proposing any automation workflow. Do not assume the project matches a generic template.
+
+This skill includes a vendored copy of the Academic Research Skills suite under
+`references/academic-research-skills/`. Treat it as a bundled capability layer
+for academic research, writing, review, and publication workflows.
+
+## Capability Routing
+
+Use the narrowest capability that satisfies the user's current request. Default
+to the core workflow for repository experiment automation; use the bundled
+academic suite only when the user is asking for research framing, literature
+work, manuscript work, peer review, or a publication pipeline.
+
+| User intent | Capability to use |
+| --- | --- |
+| Run or automate code experiments in a repository | Research Autopilot core workflow |
+| Turn a codebase into an autonomous experiment loop | Research Autopilot core workflow |
+| Design a literature search, evidence synthesis, fact check, PRISMA review, systematic review, meta-analysis, or research question | Bundled `deep-research` |
+| Write, outline, revise, format, or citation-check an academic paper | Bundled `academic-paper` |
+| Review a manuscript, simulate peer review, critique methods, or verify revisions | Bundled `academic-paper-reviewer` |
+| Coordinate research -> paper -> integrity -> review -> revision -> finalization | Bundled `academic-pipeline` |
+
+When a bundled academic capability is selected, first read only its `SKILL.md`:
+
+- `references/academic-research-skills/deep-research/SKILL.md`
+- `references/academic-research-skills/academic-paper/SKILL.md`
+- `references/academic-research-skills/academic-paper-reviewer/SKILL.md`
+- `references/academic-research-skills/academic-pipeline/SKILL.md`
+
+Resolve that suite's relative references from
+`references/academic-research-skills/`. For example, references to `shared/`,
+`scripts/`, `commands/`, `.claude/`, and `docs/` point to the corresponding
+directories inside `references/academic-research-skills/`. Load agent prompts,
+templates, and reference files only when the selected mode needs them.
+
+For ML research projects, combine both layers when appropriate:
+
+1. Use the Research Autopilot core workflow to inspect code, establish baseline
+   commands, define metrics, and produce reproducible experiment artifacts such
+   as `program.md`, `results.tsv`, `prepare.py`, and `train.py`.
+2. Use bundled `deep-research` to frame the research question, related work,
+   methodology rationale, fact checks, or systematic literature review.
+3. Use bundled `academic-paper` after experiment outputs are available and
+   verified.
+4. Use bundled `academic-paper-reviewer` for manuscript critique or
+   post-revision checks.
+5. Use bundled `academic-pipeline` only when the user wants the complete
+   academic workflow rather than one focused step.
+
+Do not force the full academic pipeline for a single research, writing, review,
+or experiment-automation task.
+
+The vendored suite retains upstream attribution and license files. If publishing
+or redistributing this skill, preserve
+`references/academic-research-skills/LICENSE` and
+`references/academic-research-skills/NOTICE.md`.
 
 ## Core Workflow
 
@@ -158,3 +213,7 @@ Read [references/program-template.md](references/program-template.md) when you n
 Read [references/claude-code-template.md](references/claude-code-template.md) when the user wants a prompt/template that Claude Code or other agents can use directly.
 
 Read [references/examples/autoresearch/README.md](references/examples/autoresearch/README.md) plus the bundled example files in `references/examples/autoresearch/` when you want a concrete minimal example of this workflow in a real repository.
+
+Read [references/academic-research-routing.md](references/academic-research-routing.md) when you need a compact routing table for the bundled academic research capabilities.
+
+The full Academic Research Skills suite is vendored under [references/academic-research-skills/](references/academic-research-skills/), including its upstream `LICENSE` and `NOTICE.md`.
